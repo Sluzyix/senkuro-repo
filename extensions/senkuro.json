@@ -1,6 +1,10 @@
 {
   "latestVersion": "1.0.1",
   "updateAvailable": false,
-  "changelog": "Initial release",
-  "downloadUrl": "https://senkuro.com/download/latest"
+  "changelog": "Initial stable release",
+  "compatibility": {
+    "min": "1.0.0",
+    "max": "2.0.0"
+  },
+  "releaseDate": "2023-04-05"
 }
