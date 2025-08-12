@@ -2,7 +2,7 @@ name: Auto-update Repository
 on:
   schedule:
     - cron: '0 0 * * *'  # Ежедневно в 00:00 UTC
-  workflow_dispatch:      # Ручной запуск
+  workflow_dispatch:
 
 jobs:
   update:
@@ -10,16 +10,33 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
       - name: Update timestamps
         run: |
           CURRENT_TS=$(date +%s)
-          echo $(jq --arg ts "$CURRENT_TS" '.lastUpdate = ($ts|tonumber)' update.json) > update.json
-          echo $(jq --arg ts "$CURRENT_TS" '.repositoryInfo.timestamp = ($ts|tonumber)' index.min.json) > index.min.json
+          
+          # Обновляем timestamp в update.json
+          jq --arg ts "$CURRENT_TS" '.lastUpdate = ($ts|tonumber)' update.json > temp.json
+          mv temp.json update.json
+          
+          # Обновляем timestamp в index.min.json
+          jq --arg ts "$CURRENT_TS" '.repositoryInfo.timestamp = ($ts|tonumber)' index.min.json > temp.json
+          mv temp.json index.min.json
+
+      - name: Validate JSON
+        run: |
+          jq empty index.min.json || exit 1
+          jq empty update.json || exit 1
+          jq empty extensions/senkuro.json || exit 1
 
       - name: Commit changes
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
           git add .
-          git commit -m "Auto-update: $(date +'%Y-%m-%d %H:%M:%S')"
+          git diff --quiet && git diff --staged --quiet || git commit -m "Auto-update: $(date +'%Y-%m-%d %H:%M:%S')"
           git push
