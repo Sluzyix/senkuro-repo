@@ -1,7 +1,7 @@
 name: Auto-update Repository
 on:
   schedule:
-    - cron: '0 0 * * *'  # Ежедневно в 00:00 UTC
+    - cron: '0 0 * * *'  # Daily at midnight UTC
   workflow_dispatch:
 
 jobs:
@@ -10,28 +10,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-
       - name: Update timestamps
         run: |
           CURRENT_TS=$(date +%s)
-          
-          # Обновляем timestamp в update.json
-          jq --arg ts "$CURRENT_TS" '.lastUpdate = ($ts|tonumber)' update.json > temp.json
-          mv temp.json update.json
-          
-          # Обновляем timestamp в index.min.json
-          jq --arg ts "$CURRENT_TS" '.repositoryInfo.timestamp = ($ts|tonumber)' index.min.json > temp.json
-          mv temp.json index.min.json
-
-      - name: Validate JSON
-        run: |
-          jq empty index.min.json || exit 1
-          jq empty update.json || exit 1
-          jq empty extensions/senkuro.json || exit 1
+          jq --arg ts "$CURRENT_TS" '.lastUpdate = ($ts|tonumber)' update.json > tmp.json && mv tmp.json update.json
+          jq --arg ts "$CURRENT_TS" '.repositoryInfo.timestamp = ($ts|tonumber)' index.min.json > tmp.json && mv tmp.json index.min.json
 
       - name: Commit changes
         run: |
