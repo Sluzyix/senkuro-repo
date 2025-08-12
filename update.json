@@ -1,5 +1,6 @@
 {
   "lastUpdate": 1712345678,
-  "repositoryUrl": "https://raw.githubusercontent.com/YOUR-USERNAME/senkuro-repo/main/index.min.json",
-  "signature": "sha384-base64-signature-here"
+  "repositoryUrl": "https://raw.githubusercontent.com/Sluzyix/senkuro/main/index.min.json",
+  "signature": "sha384-signed-hash-here",
+  "updateNotification": "https://your-real-domain.com/changelog"
 }
