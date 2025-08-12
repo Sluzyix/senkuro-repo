@@ -1,7 +1,9 @@
 {
   "latestVersion": "1.0.0",
   "updateAvailable": false,
-  "changelog": "Initial release for senkuro.com",
+  "changelog": "Initial release",
+  "downloadUrl": "https://senkuro.com/download",
+  "minAppVersion": "1.0.0",
   "compatibility": {
     "min": "1.0.0",
     "max": "2.0.0"
